@@ -24,7 +24,7 @@ To interface an LED, push button, and digital sensor with the GPIO pins of a Ras
 
 ---
 
-**To upload Wokwi circuit diagram**
+<img width="497" height="319" alt="image" src="https://github.com/user-attachments/assets/b8305018-d3e1-45ac-86ad-7aad614435c0" />
 
 ---
 
@@ -123,54 +123,41 @@ To interface an LED, push button, and digital sensor with the GPIO pins of a Ras
 # Program
 
 ```python
-from machine import Pin
-import time
+import machine
+import time 
+# Define the GPIO pins for the LED and push button 
+LED_PIN = 0 # GPO
+BUTTON_PIN = 14 # GP14
 
-# GPIO pin configuration
-LED_PIN = 15
-BUTTON_PIN = 14
-SENSOR_PIN = 13
+# Intialize the LED pin as an output and the button pin as an input with a pull-up resistor
+led = machine.Pin(LED_PIN, machine.Pin.OUT)
+button = machine.Pin(BUTTON_PIN, machine.Pin.IN,
+machine.Pin.PULL_UP)
 
-# Configure GPIO pins
-led = Pin(LED_PIN, Pin.OUT)
-button = Pin(BUTTON_PIN, Pin.IN, Pin.PULL_UP)
-sensor = Pin(SENSOR_PIN, Pin.IN)
-
-print("Raspberry Pi Pico GPIO Interface Started")
-print("LED: GP15 | Button: GP14 | Sensor: GP13")
-
-try:
-    while True:
-
-        # Read push button and sensor
-        button_state = button.value()
-        sensor_state = sensor.value()
-
-        # Display input states
-        print("Button =", button_state,
-              "| Sensor =", sensor_state)
-
-        # Control LED
-        if button_state == 0 or sensor_state == 1:
-            led.value(1)
-            print("LED = ON")
-        else:
-            led.value(0)
-            print("LED = OFF")
-
+while True:
+    if not button.value(): # check if the button is pressed (LOW)
+        led.on()  # Turn on the LED 
+        print("LED ON!")
         time.sleep(0.5)
-
-except KeyboardInterrupt:
-    led.value(0)
-    print("Program stopped")
+    else:
+        led.off()  # Turn off the LED 
+        print("LED OFF!")
+        time.sleep(0.5)
 ```
 
-> **Note:** The program uses MicroPython and the `machine.Pin` class for GPIO interfacing. The push button uses an internal pull-up resistor, so its state is **LOW (0) when pressed**. The sensor is assumed to provide a digital output, where **HIGH (1) indicates detection**.
 
 ---
 
-# Observation
+# EXPECTED OUTPUT
+```text
+LED OFF
+LED OFF
+LED ON
+LED ON
+LED OFF
+```
 
+<img width="940" height="817" alt="image" src="https://github.com/user-attachments/assets/7b6402a7-499f-4d01-9529-97a3f0202aff" />
 
 
 ---
